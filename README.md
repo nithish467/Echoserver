@@ -27,36 +27,53 @@ Serving the HTML pages.
 Testing the webserver
 
 ## PROGRAM:
+
+## Server code
 ```
-from http.server import HTTPServer,BaseHTTPRequestHandler
-
-content='''
-<!doctype html>
-<html>
-<head>
-<title> My Web Server</title>
-</head>
-<body>
-<h1>Top Five Web Application Development Frameworks</h1>
-<h2>1.Django</h2>
-<h2>2. MEAN Stack</h2>
-<h2>3. React </h2>
-</body>
-</html>
+# server.py
 
 
-class MyServer(BaseHTTPRequestHandler):
-    def do_GET(self):
-        print("Get request received...")
-        self.send_response(200) 
-        self.send_header("content-type", "text/html")       
-        self.end_headers()
-        self.wfile.write(content.encode())
+import socket
 
-print("This is my webserver") 
-server_address =('keerthi',2323)
-httpd = HTTPServer(server_address,MyServer)
-httpd.serve_forever()
+
+HOST = "127.0.0.1"  # Standard loopback interface address (localhost)
+PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
+
+
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    s.bind((HOST, PORT))
+    s.listen()
+    conn, addr = s.accept()
+    with conn:
+        print(f"Connected by {addr}")
+        while True:
+            data = conn.recv(1024)
+            if not data:
+                break
+            conn.sendall(data)
+```
+
+
+## Client Code:
+```
+# client.py
+
+
+import socket
+
+
+HOST = "127.0.0.1"  # The server's hostname or IP address
+PORT = 65432  # The port used by the server
+
+
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    s.connect((HOST, PORT))
+    s.sendall(b"Hello, world")
+    data = s.recv(1024)
+
+
+print(f"Received {data!r}")
+
 ```
 ##  Architecture Diagram
 
@@ -86,9 +103,13 @@ httpd.serve_forever()
 
 
 ## OUTPUT:
-### CLIENT OUTPUT:
+### CLIENT OUTPUT: 
+<img width="643" height="432" alt="image" src="https://github.com/user-attachments/assets/aeb596e0-564c-4f4e-9963-2a3677cd14e1" />
 
-### SERVER OUTPUT:
+
+### SERVER OUTPUT: 
+<img width="693" height="393" alt="image" src="https://github.com/user-attachments/assets/0ddcaec9-864d-4560-ae31-5329cb00d245" />
+
 
 ## RESULT:
 The program is executed succesfully
